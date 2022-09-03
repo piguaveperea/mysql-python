@@ -1,7 +1,5 @@
-from distutils.log import error
-from msilib.schema import Error
-from turtle import color
 import pymysql
+from prettytable import PrettyTable
 
 conn = pymysql.connect(
     host='localhost',
@@ -11,6 +9,10 @@ conn = pymysql.connect(
 )
 
 cursor=conn.cursor()
+
+table = PrettyTable()
+
+table.field_names = ["Id", "Color", "Figura"]
 
 class Casa:
     color = ""
@@ -45,11 +47,15 @@ class Casa:
         pass
     
     def leer(self):
-        sql = "select id, color, forma from casa"
-        cursor.execute(sql)
-        for casa in cursor.fetchall():
-            print(casa)
-    
+        sql = "select  id, color, forma  from casa"
+        try:
+            cursor.execute(sql)
+            table.add_rows(cursor.fetchall())
+            print(table)
+        except conn.Error as err:
+            print(err)
+
+
     def leerId(self, id):
         sql = "select id, color, forma from casa where casa.id = '{0}'".format(id)
         cursor.execute(sql)
@@ -57,6 +63,13 @@ class Casa:
             print(casa)
         pass
 
+    def buscar(self, id):
+        sql = """
+            select * from  casa where casa.id = '{0}'
+        """.format(id)
+
+        cursor.execute(sql)
+        return cursor.fetchall()
 class Menu:
     def ui_menu(self):
         print(
@@ -85,12 +98,16 @@ while True:
         exit()
 
     if comando == "C":
+        print("\n Registrar nueva casas \n")
         casa.color = input("Ingresar color: ")
         casa.forma = input("Ingresar forma: ")
-        casa.crear()
+        casa.crear()    
     if comando == "E":
         id_casa = input("Ingrese el Id ")
-        casa.eliminar(id_casa)
+        if casa.buscar == ():
+            print("No existe")
+        else:
+            casa.eliminar(id_casa)
 
     if comando == "R":
         casa.leer()
@@ -101,7 +118,11 @@ while True:
     
     if comando == "A":
         id_casa = input("Ingrese el Id ")
-        casa.color = input("Ingresar color: ")
-        casa.forma = input("Ingresar forma: ")
-        casa.actualiza(id_casa)
+        if casa.buscar(id_casa) == ():
+            print("No existe la casa")
+        else:
+            print(casa.buscar(id_casa))
+            casa.color = input("Ingresar color: ")
+            casa.forma = input("Ingresar forma: ")
+            casa.actualiza(id_casa)
 
