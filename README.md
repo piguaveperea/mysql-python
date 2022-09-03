@@ -18,6 +18,8 @@ Bienvenido es un proyecto básico de Python y MySQL
     pip install -r requirements.txt
     ```
 
+![alt](img/example.png)
+
 
 
 
