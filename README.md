@@ -21,6 +21,6 @@ Bienvenido es un proyecto básico de Python y MySQL
 ![alt](img/example.png)
 
 
-
+    
 
 
